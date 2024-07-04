@@ -25,10 +25,9 @@ def get_details(city, api_key):
         return 'Error', np.NAN, np.NAN, np.NAN, np.NAN, np.NAN , np.NAN
 
 def create_table(cur):
-    create_table_SQL= """
-    CREATE TABLE IF NOT EXISTS student.de_vandy_current_weather (
-      row_id SERIAL PRIMARY KEY,
-      Location VARCHAR(50),
+    create_table_SQL = """
+    CREATE TABLE student.de_vandy_current_weather (
+      Location VARCHAR(50) PRIMARY KEY,
       temp_c FLOAT,
       humidity FLOAT,
       Wind_speed FLOAT,
@@ -40,11 +39,17 @@ def create_table(cur):
     conn.commit()
     
 
-def insert_data(conn, data):
+def upsert_data(conn, data):
     sql = f"""
     INSERT INTO student.de_vandy_current_weather (Location, temp_c, humidity, Wind_speed, Feels_like, Sky_condition)
     VALUES ('{data['Location']}', {data['temp_c']}, {data['humidity']}, 
             {data['Wind_speed']}, {data['Feels_like']}, '{data['Sky_condition']}')
+    ON CONFLICT (Location) DO UPDATE SET
+        temp_c = EXCLUDED.temp_c,
+        humidity = EXCLUDED.humidity,
+        Wind_speed = EXCLUDED.Wind_speed,
+        Feels_like = EXCLUDED.Feels_like,
+        Sky_condition = EXCLUDED.Sky_condition;
     """
     cur = conn.cursor()
     cur.execute(sql)
@@ -78,10 +83,5 @@ if __name__ == "__main__":
     create_table(cur)
 
     
-    for city in location:
-        weather_details = get_details(city, api_key)
-        insert_data(conn, weather_details)
-    
-    cur.close()
-    conn.close()
+   
     
