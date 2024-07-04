@@ -6,10 +6,9 @@ import psycopg2 as psql
 import os
 from dotenv import load_dotenv
 
-
 st.set_page_config(layout="wide")
 
-#fetching data from teh database 
+# Fetching data from the database
 def fetch_data():
     load_dotenv()
     password = os.getenv('SQLPass')
@@ -28,27 +27,40 @@ def fetch_data():
     conn.close()
     return df
 
-
 df = fetch_data()
 
 nowTime = datetime.now()
 current_time = nowTime.strftime("%H:%M:%S")
 today = str(date.today())
 
-#setting current location to London
+# Setting current location to London
 london_data = df[df['location'] == 'London']
 
+def create_css_style(title, value, is_image=False):
+    if is_image:
+        
+        return f"""
+            <div style="background-color: grey; padding: 10px; border-radius: 5px; margin-bottom: 0px; margin-top: 0px">
+                <p style="color: white; font-size: 25px; font-weight: 700;">{title}</p>
+                <img src="{value}" alt="{title}" style="width: 150px; height: 150px;">
+            </div>
+        """
+    else:
+        return f"""
+            <div style="background-color: grey; padding: 10px; border-radius: 5px; margin-bottom: 0px; margin-top: 0px">
+                <p style="color: white; font-size: 25px; font-weight: 700;">{title}</p>
+                <h3 style="color: white; font-size: 40px; font-weight: 700;">{value}</h3>
+            </div>
+        """
 
-def create_css_style(title, value):
-    return f"""
-        <div style="background-color: grey; padding: 10px; border-radius: 5px; margin-bottom: 0px; margin-top: 0px">
-            <p style="color: white; font-size: 25px; font-weight: 700;">{title}</p>
-            <h3 style="color: white; font-size: 40px; font-weight: 700;">{value}</h3>
-        </div>
-    """
-
-
-st.title("Current Weather Forecast ")
+# Add title and weather icon
+icon_url = 'http:' + london_data.iloc[0]['icon'] if london_data.iloc[0]['icon'].startswith('//') else london_data.iloc[0]['icon']
+st.markdown(f"""
+    <div style="display: flex; align-items: center;">
+        <h1 style="margin-right: 20px;">Current Weather Forecast</h1>
+        <img src="{icon_url}" alt="Weather Icon" style="width: 100px; height: 100px;">
+    </div>
+    """, unsafe_allow_html=True)
 
 # Row A
 st.markdown('<div class="row-container">', unsafe_allow_html=True)
@@ -72,7 +84,7 @@ with b3:
     st.markdown(create_css_style("Sky Condition", london_data.iloc[0]['sky_condition']), unsafe_allow_html=True)
 with b4:
     st.markdown(create_css_style("Humidity (%)", london_data.iloc[0]['humidity']), unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+
 
 st.header("Comparison with Other Cities")
 
@@ -116,5 +128,3 @@ with chart_col3:
     ax_hum.set_title('Humidity by City')
     ax_hum.legend()
     st.pyplot(fig_hum)
-
-
