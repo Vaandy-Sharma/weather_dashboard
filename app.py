@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import psycopg2 as psql
 import os
 from dotenv import load_dotenv
@@ -30,7 +30,7 @@ def fetch_data():
 df = fetch_data()
 
 nowTime = datetime.now()
-current_time = nowTime.strftime("%H:%M:%S")
+current_time_plus_one = (nowTime + timedelta(hours=1)).strftime("%H:%M:%S")
 today = str(date.today())
 
 # Setting current location to London
@@ -70,7 +70,7 @@ with a1:
 with a2:
     st.markdown(create_css_style("Location", london_data.iloc[0]['location']), unsafe_allow_html=True)
 with a3:
-    st.markdown(create_css_style("Time", current_time), unsafe_allow_html=True)
+    st.markdown(create_css_style("Time", current_time_plus_one), unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Row B
