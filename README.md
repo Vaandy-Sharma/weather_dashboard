@@ -9,7 +9,7 @@ This project is a **Live Weather Dashboard** that tracks and displays real-time 
 - **Data Visualization**: Python scripts combined with **Streamlit** are used to create an interactive, easy-to-use dashboard to visualize weather data trends. Users can compare different weather variables across cities.
 
 - **ETL Pipeline**: A custom-built **ETL (Extract, Transform, Load)** pipeline automatically processes the data. 
-  - **Extract**: The data is pulled from the weather API at regular intervals.
+  - **Extract**: The data is pulled from the weather API at regular intervals using HTTP GET requests.
   - **Transform**: Data is cleaned and transformed for analysis.
   - **Load**: Transformed data is loaded into a **PostgreSQL** database for persistent storage and future analysis.
 
@@ -20,7 +20,7 @@ This project is a **Live Weather Dashboard** that tracks and displays real-time 
 ## Technology Stack
 
 ### Backend:
-- **Weather API**: Fetches live weather data for cities like London and other major cities.
+- **Weather API**: Fetches live weather data for cities like London and other major cities through REST API calls.
 - **ETL Pipeline**: Developed using **Python** to automate data extraction, transformation, and loading into a PostgreSQL database.
 - **PostgreSQL**: Stores the weather data collected over time for persistent access.
 
